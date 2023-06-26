@@ -4,25 +4,27 @@ import com.example.movie2.Movie.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class ReviewService {
+    @Autowired
     private ReviewRepository reviewRepository;
-    @Autowired
-    public ReviewService(ReviewRepository reviewRepository) {
-        this.reviewRepository = reviewRepository;
-    }
 
-    private MongoTemplate mongoTemplate;
     @Autowired
-    public ReviewService(MongoTemplate mongoTemplate) {
-        this.mongoTemplate = mongoTemplate;
-    }
+    private MongoTemplate mongoTemplate;
 
     public Review createReview(String reviewBody, String imdbId){
-        Review review = reviewRepository.insert(new Review(reviewBody));
+        Review review = reviewRepository.insert(new Review(reviewBody, LocalDateTime.now(), LocalDateTime.now()));
+
+//        Query query = new Query();
+//        query.addCriteria(Criteria.where("imdbId").is(imdbId));
+//        Update update = new Update().push("reviewIds").value(review);
+//        mongoTemplate.updateFirst(query, update, Movie.class);
 
         mongoTemplate.update(Movie.class)
                 .matching(Criteria.where("imdbId").is(imdbId))
@@ -31,4 +33,15 @@ public class ReviewService {
 
         return review;
     }
+
+
+
+
+//    public Review createReview(String reviewBody, String imdbId){
+//        Review review = reviewRepository.insert(new Review(reviewBody));
+//        mongoTemplate.
+//
+//        return review;
+//    }
+
 }
