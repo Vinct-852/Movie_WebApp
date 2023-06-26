@@ -15,11 +15,16 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/reviews")
 public class ReviewController {
+    private final ReviewService reviewService;
     @Autowired
-    private ReviewService reviewService;
+    public ReviewController(ReviewService reviewService) {
+        this.reviewService = reviewService;
+    }
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<Review> createReview(@RequestBody Map<String, String> payload){
-        return new ResponseEntity<Review>(reviewService.createReview(payload.get("reviewBody"), payload.get("imdbId")), HttpStatusCode.valueOf(200));
+        return new ResponseEntity<Review>(reviewService
+                .createReview(payload.get("reviewBody"), payload.get("imdbId"))
+                , HttpStatusCode.valueOf(201));
     }
 }
